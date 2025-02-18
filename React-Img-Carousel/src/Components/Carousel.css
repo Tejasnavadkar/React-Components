@@ -1,0 +1,69 @@
+
+.carousel{
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 600px;
+    width: 400;
+}
+
+.slide{
+    border-radius: 0.5rem;
+    box-shadow: 0 0 7px #666;
+    height: 100%;
+    width: 100%;
+}
+
+.slide-hidden{
+    display: none;
+}
+.arrow{
+    position: absolute;
+    height: 2rem;
+    width: 2rem;
+    color: white;
+    filter: drop-shadow(0 0 5px #555);  /* not use box-shadow its gives sqaure shadow not rounded */
+
+}
+
+.arrow-inactive{
+    display: none;
+}
+
+.arrow:hover{
+    cursor: pointer;
+}
+
+.arrowLeft{
+left: 1rem;
+}
+
+.arrowRight{
+    right: 1rem;
+}
+
+.indicators{
+    position: absolute;
+    display: flex;
+    bottom: 1rem; 
+    
+
+}
+
+.indicator{
+    background-color: white;
+    height:0.5rem;
+    width: 0.5rem;
+    outline: none;
+    border-radius: 100%;
+    border: none;
+    margin: 0 0.2rem;
+    box-shadow: 0 0 5px #555;
+    cursor: pointer;
+
+}
+
+.indicator-inactive{
+    background-color: #666;
+}
