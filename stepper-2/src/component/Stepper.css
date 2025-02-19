@@ -1,0 +1,57 @@
+
+
+
+.container{
+   
+    margin-top: 5rem;
+}
+
+.stepper{
+    display: flex;
+    justify-content: space-between;
+    position: relative;
+}
+
+.step{
+    
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    /* border: 2px solid pink; */
+}
+
+.index{
+    height: 2rem;
+    width: 2rem;
+    background-color: gray;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+    z-index: 2;
+}
+
+.active-index{
+    background-color: blue;
+    color: white;
+}
+
+.completed{
+    background-color: green;
+}
+
+.progress-bar{
+    position: absolute;
+    top: 25%;
+    /* width: 100%; */
+    left: 0;
+    height: 4px;
+    background-color: gray;
+}
+
+.progress{
+    height: 100%;
+    background-color: #28a745;
+    transition: 0.3s ease;
+    
+}
