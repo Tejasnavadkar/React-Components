@@ -26,7 +26,7 @@ const Breadcrumb:React.FC<Props> = ({data}) => {
             // BreadCrumbPath += `/${name}`
 
             if(idx === path.length - 1){
-                return <span>/{name}</span>
+                return <span>/{name}</span>  // last index is not clickable
             }
 
             return <Link to={`/${name}`}>/{name}</Link>
