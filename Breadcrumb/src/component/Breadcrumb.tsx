@@ -11,7 +11,7 @@ const Breadcrumb:React.FC<Props> = ({data}) => {
    const {pathname} = useLocation()
 
    const path = pathname.split('/').filter((x)=>x)
-   let BreadCrumbPath = ""
+  //  let BreadCrumbPath = ""
 
    // here we create breadcrum on the basis of url
    //eg:- url - /products/4 
@@ -23,13 +23,13 @@ const Breadcrumb:React.FC<Props> = ({data}) => {
     <div className='p-10'>
         {path.length > 0 && <Link to={'/'}>Home</Link>}
         {path.map((name,idx)=>{
-            BreadCrumbPath += `/${name}`
+            // BreadCrumbPath += `/${name}`
 
             if(idx === path.length - 1){
                 return <span>/{name}</span>
             }
 
-            return <Link to={BreadCrumbPath}>/{name}</Link>
+            return <Link to={`/${name}`}>/{name}</Link>
         })}
     </div>
   )
