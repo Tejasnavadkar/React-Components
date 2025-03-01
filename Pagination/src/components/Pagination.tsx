@@ -9,6 +9,10 @@ const Pagination = ({ pageNo, setPageNo }: PaginationProps) => {
     const prevThreeNoArray = Array.from({ length: 3 }, (_, idx) => pageNo - 1 - idx).filter((value) => value > 0).reverse() // here we create a an array with prev 3 element and next 4 element only above 0
     const nextFourNoArray = Array.from({ length: 4 }, (_, idx) => pageNo + idx).filter((value) => value > 0) 
 
+     // create Array 
+     // let buttons = Array.from({length:20},(_,idx)=>idx + 1) o/p array of 1 - 20
+     // let but = [...Array(20).keys()]  o/p array of 0 - 19
+
     const buttonArray = [...prevThreeNoArray, ...nextFourNoArray]
 
     const handleNext = () => {
