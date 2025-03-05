@@ -1,0 +1,47 @@
+import React, { useState } from 'react';
+
+const SortingArray = () => {
+  // Step 1: Dummy array of objects with 'name' and 'address'
+  const [data, setData] = useState([
+    { name: 'John Doe', address: '123 Main St' },
+    { name: 'Jane Smith', address: '456 Oak Ave' },
+    { name: 'Alice Johnson', address: '789 Pine Rd' },
+    { name: 'Bob Brown', address: '101 Maple Dr' }
+  ]);
+
+  // Step 2: Function to sort by name in ascending order
+  const sortAscending = () => {
+    const sortedData = [...data].sort((a, b) => a.name.localeCompare(b.name));
+    setData(sortedData);
+  };
+
+  // Step 3: Function to sort by name in descending order
+  const sortDescending = () => {
+    const sortedData = [...data].sort((a, b) => b.name.localeCompare(a.name));
+    setData(sortedData);
+  };
+
+  return (
+    <div>
+      <h1>Sort Array by Name</h1>
+      
+      {/* Step 4: Displaying the sorted array */}
+      <div>
+        <ul>
+          {data.map((item, index) => (
+            <li key={index}>
+              {item.name} - {item.address}
+            </li>
+          ))}
+        </ul>
+      </div>
+      
+      {/* Buttons to trigger sorting */}
+      <button onClick={sortAscending}>Sort by Name (Ascending)</button>
+      <button onClick={sortDescending}>Sort by Name (Descending)</button>
+    </div>
+  );
+};
+
+export default SortingArray;
+
