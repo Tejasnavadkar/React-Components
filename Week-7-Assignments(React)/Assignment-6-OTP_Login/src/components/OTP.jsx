@@ -43,21 +43,33 @@ export default OTP
 
 
 
+
 // import { useState } from "react";
 
 // function OTP() {
 //   const [otp, setOtp] = useState(["", "", "", ""]);
 
-//   // Function to handle input change
+//   // Handle input change
 //   const handleChange = (index, value) => {
 //     if (!/^\d*$/.test(value)) return; // Allow only numbers
+
 //     const newOtp = [...otp];
 //     newOtp[index] = value;
 //     setOtp(newOtp);
 
-//     // Move to next input if a number is entered
+//     // Move to the next input if a number is entered
 //     if (value && index < 3) {
 //       document.getElementById(`otp-${index + 1}`).focus();
+//     }
+//   };
+
+//   // Handle Backspace key
+//   const handleKeyDown = (index, e) => {
+//     if (e.key === "Backspace" && !otp[index] && index > 0) {
+//       document.getElementById(`otp-${index - 1}`).focus();
+//     }
+//     if (e.key === "Enter" && index === otp.length - 1 && otp[index]) {
+//       handleLogin();
 //     }
 //   };
 
@@ -103,6 +115,7 @@ export default OTP
 //               id={`otp-${index}`}
 //               value={digit}
 //               onChange={(e) => handleChange(index, e.target.value)}
+//               onKeyDown={(e) => handleKeyDown(index, e)}
 //               className="w-8 h-8 rounded-lg text-center"
 //               type="text"
 //               maxLength="1"
