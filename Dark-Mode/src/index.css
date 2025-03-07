@@ -1,0 +1,20 @@
+[theme-mode='light'] {
+    --bg-color: white;
+    --text-color: black;
+}
+
+[theme-mode='dark'] {
+    --bg-color: black;
+    --text-color: white;
+}
+
+
+body{
+    background-color: var(--bg-color);
+    color: var(--text-color);
+}
+
+.link{
+    text-decoration: none;
+    color: var(--text-color);
+}
