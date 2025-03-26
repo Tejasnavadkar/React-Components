@@ -60,8 +60,8 @@ const CommentSection = () => {
                 }
             })
         }
-        
-        setComments(addreplayToComment(comments,commentId,replyText))
+
+        setComments(addreplayToComment(comments,commentId,newComment))
 
     }
 
