@@ -19,7 +19,7 @@ const DragAndDrop = ({ initialData }) => {
         e.target.style.opacity = '1'; // Set the opacity to 1 when we drop/reverse 
     }
 
-    const HandleDrop = (e, container) => {
+    const HandleDrop = (e, container) => {  // here container means destination container  
 
         const item = dragItem.current
         const sourceContainer = dragContainer.current
