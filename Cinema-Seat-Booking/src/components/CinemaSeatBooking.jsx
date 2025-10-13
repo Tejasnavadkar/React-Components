@@ -19,27 +19,10 @@ const CinemaSeatBooking = ({
 }) => {
   // here we creat scalable component so here we accept props from parent to make this reusable
 
-  const initializeSeats = useMemo(() => {
-    let seats = [];
-    for (let rows = 0; rows < layout.rows; rows++) {
-      let id = String.fromCharCode(65 + rows);
-      let seatno = [];
-      for (let seat = 1; seat <= layout.seatPerRow; seat++) {
-        seatno.push({ seat, selected: false });
-      }
-      seats.push({
-        id,
-        seatno: seatno,
-      });
-    }
-    console.log("seats", seats);
-    return seats;
-  }, [layout, seatTypes, bookedSeat]); // here jab bhi seats ke layout,seatTypes and booked seats me changes hoga seat arrangement change hogi
-
+  
   const [seats, setSeats] = useState(initializeSeats);
   const [selectedSeats, setSelectedSeats] = useState([]);
 
-  console.log("selectedSeat-", selectedSeats);
 
   //   const handleSeatClick = (rowIdx, seatIdx) => {
   //   setSeats(prevSeats => {
@@ -121,6 +104,23 @@ const CinemaSeatBooking = ({
     setSelectedSeats(selected);
   }, [seats]);
 
+  const initializeSeats = useMemo(() => {
+    let seats = [];
+    for (let rows = 0; rows < layout.rows; rows++) {
+      let id = String.fromCharCode(65 + rows);
+      let seatno = [];
+      for (let seat = 1; seat <= layout.seatPerRow; seat++) {
+        seatno.push({ seat, selected: false });
+      }
+      seats.push({
+        id,
+        seatno: seatno,
+      });
+    }
+    console.log("seats", seats);
+    return seats;
+  }, [layout, seatTypes, bookedSeat]); // here jab bhi seats ke layout,seatTypes and booked seats me changes hoga seat arrangement change hogi
+
   const handleSeatClick = (rowIdx, seatIdx) => {
     setSeats((prevSeats) =>
       prevSeats.map((row, rIdx) => {
@@ -162,6 +162,9 @@ const CinemaSeatBooking = ({
     }))
   );
 };
+
+
+  console.log("selectedSeat-", selectedSeats);
 
   return (
     <div className=" bg-gray-50 min-h-screen">
