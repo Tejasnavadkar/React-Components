@@ -1,5 +1,9 @@
 import React, { useEffect, useMemo, useState } from "react";
 
+
+
+// this component is not optimize 
+
 const CinemaSeatBooking = ({
   layout = {
     rows: 8,
@@ -12,12 +16,29 @@ const CinemaSeatBooking = ({
     vip: { name: "vip", price: "350", rows: [6, 7] },
   },
   bookedSeat = [],
-  currency = "₹",
-  onBookingComplete = () => {},
+  // currency = "₹",
+  // onBookingComplete = () => {},
   title = "Cinema Hall Booking",
   subTitle = "Select Your Preferred seats",
 }) => {
   // here we creat scalable component so here we accept props from parent to make this reusable
+
+   const initializeSeats = useMemo(() => {
+    let seats = [];
+    for (let rows = 0; rows < layout.rows; rows++) {
+      let id = String.fromCharCode(65 + rows);
+      let seatno = [];
+      for (let seat = 1; seat <= layout.seatPerRow; seat++) {
+        seatno.push({ seat, selected: false });
+      }
+      seats.push({
+        id,
+        seatno: seatno,
+      });
+    }
+    console.log("seats", seats);
+    return seats;
+  }, [layout, seatTypes, bookedSeat]); // here jab bhi seats ke layout,seatTypes and booked seats me changes hoga seat arrangement change hogi
 
   
   const [seats, setSeats] = useState(initializeSeats);
@@ -92,7 +113,7 @@ const CinemaSeatBooking = ({
   // };
 
   // Update selectedSeats whenever seats state changes
-  useEffect(() => {
+  useEffect(() => {  // when select the seats add it inside selectedSeats array state 
     const selected = [];
     seats.forEach((row) => {
       row.seatno.forEach((seat) => {
@@ -104,23 +125,6 @@ const CinemaSeatBooking = ({
     setSelectedSeats(selected);
   }, [seats]);
 
-  const initializeSeats = useMemo(() => {
-    let seats = [];
-    for (let rows = 0; rows < layout.rows; rows++) {
-      let id = String.fromCharCode(65 + rows);
-      let seatno = [];
-      for (let seat = 1; seat <= layout.seatPerRow; seat++) {
-        seatno.push({ seat, selected: false });
-      }
-      seats.push({
-        id,
-        seatno: seatno,
-      });
-    }
-    console.log("seats", seats);
-    return seats;
-  }, [layout, seatTypes, bookedSeat]); // here jab bhi seats ke layout,seatTypes and booked seats me changes hoga seat arrangement change hogi
-
   const handleSeatClick = (rowIdx, seatIdx) => {
     setSeats((prevSeats) =>
       prevSeats.map((row, rIdx) => {
@@ -128,8 +132,8 @@ const CinemaSeatBooking = ({
         return {
           ...row,
           seatno: row.seatno.map((seat, sIdx) => {
-            if (sIdx !== seatIdx) return seat;
-            return { ...seat, selected: !seat.selected };
+            if (sIdx !== seatIdx) return seat;  // if seat match nahi hui to as it is seat return karo and if it match then first update status and then return updated seat
+            return { ...seat, selected: !seat.selected }; // here we toggle selection status
           }),
         };
       })
@@ -170,8 +174,9 @@ const CinemaSeatBooking = ({
     <div className=" bg-gray-50 min-h-screen">
       {/* ui */}
 
-      {/* title */}
+     
       <div className="bg-white max-w-6xl mx-auto p-6 rounded-md shadow-lg ">
+         {/* title */}
         <h1 className="text-2xl font-bold text-center">{title}</h1>
         <p className="text-gray-500 text-lg font-medium text-center">
           {subTitle}
@@ -183,7 +188,7 @@ const CinemaSeatBooking = ({
             <p className="font-semibold text-xl">Screen</p>
           </div>
 
-          {/* seat map  */}
+          {/* seat window  */}
           <div className="border flex flex-col items-center gap-4 p-4">
             <div className=" w-full flex flex-col space-y-4">
               {seats.map((item, rowIdx) => {
@@ -197,11 +202,11 @@ const CinemaSeatBooking = ({
                             <div className="flex" key={seatIdx}>
                               <span
                                 onClick={() => handleSeatClick(rowIdx, seatIdx)}
-                                className={` inline-block px-2 py-1 ${
+                                className={` inline-block px-2 py-1 border rounded-md ${
                                   seat.selected
                                     ? "bg-green-400 text-white"
-                                    : "bg-gray-400"
-                                } ${seat?.booked ? 'bg-red-600 text-white' : 'bg-gray-400'} `}
+                                    : "bg-gray-100"
+                                } ${seat?.booked ? 'bg-gray-600 text-white' : ''} `}
                               >
                                 {seat.seat}
                               </span>
