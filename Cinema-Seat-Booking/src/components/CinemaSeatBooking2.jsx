@@ -19,58 +19,93 @@ const CinemaSeatBooking2 = ({
   subTitle = "Select Your Preferred seats",
 }) => {
 
-  const colors = [
-       "blue",
-       "purple",
-       "yellow",
-       "green",
-       "red",
-       "indigo",
-       "pink",
-       "gray",
-];
+    const [selectedSeats, setSelectedSeats] = useState([]);
 
+  const colors = [
+    "blue",
+    "purple",
+    "yellow",
+    "green",
+    "red",
+    "indigo",
+    "pink",
+    "gray",
+  ];
 
   const getSeatInfo = (row) => {
     // here we return seat ainfo like price, color, type
-    const seatTypeEntries = Object.entries(seatTypes) // convert object into array with key
-    
-    for(let i = 0 ; i < seatTypeEntries.length ; i++){
-      const [type,config] = seatTypeEntries[i]
-      
-      if(config.rows.includes(row)){
-        let color = colors[i % colors.length] // it will fetch the respective color with respect to that particulr row
-        return {type:type,color,...config}
+    const seatTypeEntries = Object.entries(seatTypes); // convert object into array with key
+
+    for (let i = 0; i < seatTypeEntries.length; i++) {
+      const [type, config] = seatTypeEntries[i];
+
+      if (config.rows.includes(row)) {
+        let color = colors[i % colors.length]; // it will fetch the respective color with respect to that particulr row
+        return { type: type, color, ...config };
       }
     }
 
-    const [firstType,firstConfig] = seatTypeEntries[0] 
-    return {type:firstType,color:colors[0],...firstConfig}  // default    
-
+    const [firstType, firstConfig] = seatTypeEntries[0];
+    return { type: firstType, color: colors[0], ...firstConfig }; // default
   };
 
   const handleSeatClick = (rowIndex, seatIndex) => {
-    //seat click logic
-    console.log({ rowIndex, seatIndex }); // o/p {rowIndex: 0, seatIndex: 1}
+      //seat click logic
+      const seat = seats[rowIndex][seatIndex] // 2d array
+      const isAlreadySelected = seat.selected
+      setSeats((prevSeats)=>{
+       return prevSeats?.map((row,rowidx)=>{
+           if(rowidx==rowIndex){
+            return row?.map((seat,idx)=>{
+             if(idx==seatIndex) {
+                return {...seat,selected : !seat?.selected}
+             }
+             return seat
+             })
+           }
+           return row
+        })
+      })
+      if(isAlreadySelected){
+        setSelectedSeats((prev)=>{
+          return prev.filter((item)=>item.id !==seat.id)
+        })
+      }else{
+        setSelectedSeats((prev)=>[...prev,seat])
+      }
+
+  };
+ console.log("selectedStaets--",selectedSeats)
+  const getColorClass = (seatColor) => {
+    const colorMap = {
+      blue: "bg-blue-100 border-blue-300 text-blue-800 hover:bg-blue-200",
+      purple:
+        "bg-purple-100 border-purple-300 text-purple-800 hover:bg-purple-200",
+      yellow:
+        "bg-yellow-100 border-yellow-300 text-yellow-800 hover:bg-yellow-200",
+      green: "bg-green-100 border-green-300 text-green-800 hover:bg-green-200",
+      red: "bg-red-100 border-red-300 text-red-800 hover:bg-red-200",
+      indigo:
+        "bg-indigo-100 border-indigo-300 text-indigo-800 hover:bg-indigo-200",
+      pink: "bg-pink-100 border-pink-300 text-pink-800 hover:bg-pink-200",
+      gray: "bg-gray-100 border-gray-300 text-gray-800 hover:bg-gray-200",
+    };
+    return colorMap[seatColor] || colorMap.blue;
   };
 
-  const getColorClass = (seatColor) =>{
-
-  }
-
   const getSeatClassName = (seat) => {
-    const baseClass = "w-8 h-8 sm:w-10 sm:h-10 1g:w-12 lg:h-12 m-1 rounded-t-lg border-2 cursor-pointer transition-all duration-200 flex items-center justify-center text-xs sm:text-sm font-bold bg-blue-100 border-blue-300  text-blue-800"; // these styling for regular/default seats
+    const baseClass =
+      "w-8 h-8 sm:w-10 sm:h-10 1g:w-12 lg:h-12 m-1 rounded-t-lg border-2 cursor-pointer transition-all duration-200 flex items-center justify-center text-xs sm:text-sm font-bold bg-blue-100 border-blue-300  text-blue-800"; // these styling for regular/default seats
 
     // more conditions resepect to the seat type seat.type like this
     if (seat.status === "booked") {
-      return `${baseClass} bg-gray-400 border-gray-500 text-gray-600 cursor-not-allowed `
-  }
-   if (seat.selected) {
-     return `${baseClass} bg-green-500 border-green-600 text-white transform scale-110;`
-  }
+      return `${baseClass} bg-gray-400 border-gray-500 text-gray-600 cursor-not-allowed `;
+    }
+    if (seat.selected) {
+      return `${baseClass} bg-green-500 border-green-600 text-white transform scale-110;`;
+    }
 
-    return `${baseClass} ${getColorClass(seat.color)}` // color with respective to seat color 
-
+    return `${baseClass} ${getColorClass(seat.color)}`; // color with respective to seat color
   };
   const renderSeatSection = (seatRow, startIndex, endIndex) => {
     return seatRow.slice(startIndex, endIndex).map((seat, index) => {
@@ -93,8 +128,8 @@ const CinemaSeatBooking2 = ({
     let seats = []; // this array consists array of seats object [[{id:'A1',row:0,seat:0,type:'regular',color:'blue',..},{},{}],[{},{},{}]]
     for (let row = 0; row < layout.rows; row++) {
       let seatRow = [];
-      let seatTypeInfo = getSeatInfo(row)
-    //  console.log('seatTypeInfo--', seatTypeInfo)
+      let seatTypeInfo = getSeatInfo(row);
+      //  console.log('seatTypeInfo--', seatTypeInfo)
       for (let seat = 0; seat < layout.seatPerRow; seat++) {
         let seatId = `${String.fromCharCode(65 + row)}${seat + 1}`; // e.g A1
         seatRow.push({
@@ -115,7 +150,9 @@ const CinemaSeatBooking2 = ({
   }, [layout, seatTypes, bookedSeat]);
 
   const [seats, setSeats] = useState(initilizeSeats);
-  const [selectedSeats,setSelectedSeats] = useState([])
+
+
+  const uniqueSeats = Object.entries(seatTypes).map(([type,config],idx)=>({type,color:colors[idx%colors.length],...config}))
 
   return (
     <div className=" bg-gray-50 min-h-screen">
@@ -156,7 +193,33 @@ const CinemaSeatBooking2 = ({
           </div>
 
           {/* legend  */}
+           <div className="flex justify-center gap-4">
+             {
+              uniqueSeats.map((seat,idx)=>{
+                return <div key={idx} className="flex gap-1">
+                  <div className={`h-6 w-6 border rounded-t-md ${getColorClass(seat.color)} `}></div>
+                  <span className="text-sm font-medium ">{`${seat.name}(${currency}${seat.price})`}</span>
+                </div>
+              })
+             }
+             <div className="flex gap-1">
+                  <div className={`h-6 w-6 border rounded-t-md bg-gray-400 border-gray-600 `}></div>
+                  <span className="text-sm font-medium ">{`booked seats`}</span>
+                </div>
+                <div className="flex gap-1">
+                  <div className={`h-6 w-6 border rounded-t-md bg-green-500 border-green-600 `}></div>
+                  <span className="text-sm font-medium ">Selected seats</span>
+                </div>
+           </div>
           {/* summary  */}
+
+          <div>
+            {selectedSeats.length > 0 ?(<div>
+              <span>Selected Seats:</span>
+              <span>{selectedSeats?.map((seats)=>seats.id).join(", ")}</span>
+            </div>) : (<span>no seat selected</span>)}
+          </div>
+
           {/* book button */}
           <div></div>
         </div>
