@@ -12,14 +12,14 @@ const CinemaSeatBooking2 = ({
     premium: { name: "premium", price: "250", rows: [3, 4, 5] },
     vip: { name: "vip", price: "350", rows: [6, 7] },
   },
-  bookedSeat = [],
+  // bookedSeat = [],
   currency = "₹",
   onBookingComplete = () => {},
   title = "Cinema Hall Booking",
   subTitle = "Select Your Preferred seats",
 }) => {
-
-    const [selectedSeats, setSelectedSeats] = useState([]);
+  const [selectedSeats, setSelectedSeats] = useState([]);
+  const [bookedSeat, setBookedSeats] = useState([]);
 
   const colors = [
     "blue",
@@ -50,32 +50,31 @@ const CinemaSeatBooking2 = ({
   };
 
   const handleSeatClick = (rowIndex, seatIndex) => {
-      //seat click logic
-      const seat = seats[rowIndex][seatIndex] // 2d array
-      const isAlreadySelected = seat.selected
-      setSeats((prevSeats)=>{
-       return prevSeats?.map((row,rowidx)=>{
-           if(rowidx==rowIndex){
-            return row?.map((seat,idx)=>{
-             if(idx==seatIndex) {
-                return {...seat,selected : !seat?.selected}
-             }
-             return seat
-             })
-           }
-           return row
-        })
-      })
-      if(isAlreadySelected){
-        setSelectedSeats((prev)=>{
-          return prev.filter((item)=>item.id !==seat.id)
-        })
-      }else{
-        setSelectedSeats((prev)=>[...prev,seat])
-      }
-
+    //seat click logic
+    const seat = seats[rowIndex][seatIndex]; // 2d array
+    const isAlreadySelected = seat.selected;
+    setSeats((prevSeats) => {
+      return prevSeats?.map((row, rowidx) => {
+        if (rowidx == rowIndex) {
+          return row?.map((seat, idx) => {
+            if (idx == seatIndex) {
+              return { ...seat, selected: !seat?.selected };
+            }
+            return seat;
+          });
+        }
+        return row;
+      });
+    });
+    if (isAlreadySelected) {
+      setSelectedSeats((prev) => {
+        return prev.filter((item) => item.id !== seat.id);
+      });
+    } else {
+      setSelectedSeats((prev) => [...prev, seat]);
+    }
   };
- console.log("selectedStaets--",selectedSeats)
+  console.log("selectedStaets--", selectedSeats);
   const getColorClass = (seatColor) => {
     const colorMap = {
       blue: "bg-blue-100 border-blue-300 text-blue-800 hover:bg-blue-200",
@@ -123,6 +122,33 @@ const CinemaSeatBooking2 = ({
     });
   };
 
+  const handleBookSeats = () => {
+    if (selectedSeats.length <= 0) {
+      return alert("First Select Seats");
+    }
+
+    // Collect IDs of seats to be booked
+    const seatsToBook = selectedSeats.map((seat) => seat.id);
+
+    setSeats((prev) =>
+      prev.map((row) =>
+        row.map((seat) =>
+          seatsToBook.includes(seat.id)
+            ? { ...seat, selected: false, status: "booked" }
+            : seat
+        )
+      )
+    );
+
+    // Add only new booked seats (avoid duplicates) agar pehele se hi add hai to mat add karana state me
+    setBookedSeats((prev) => [
+      ...prev,
+      ...seatsToBook.filter((id) => !prev.includes(id)),
+    ]);
+
+    setSelectedSeats([]);
+  };
+
   const initilizeSeats = useMemo(() => {
     // now here we write logic to create seats array so we can render it on screen
     let seats = []; // this array consists array of seats object [[{id:'A1',row:0,seat:0,type:'regular',color:'blue',..},{},{}],[{},{},{}]]
@@ -151,8 +177,12 @@ const CinemaSeatBooking2 = ({
 
   const [seats, setSeats] = useState(initilizeSeats);
 
-
-  const uniqueSeats = Object.entries(seatTypes).map(([type,config],idx)=>({type,color:colors[idx%colors.length],...config}))
+  const uniqueSeats = Object.entries(seatTypes).map(([type, config], idx) => ({
+    type,
+    color: colors[idx % colors.length],
+    ...config,
+  }));
+  // const bookedSeat =
 
   return (
     <div className=" bg-gray-50 min-h-screen">
@@ -193,35 +223,67 @@ const CinemaSeatBooking2 = ({
           </div>
 
           {/* legend  */}
-           <div className="flex justify-center gap-4">
-             {
-              uniqueSeats.map((seat,idx)=>{
-                return <div key={idx} className="flex gap-1">
-                  <div className={`h-6 w-6 border rounded-t-md ${getColorClass(seat.color)} `}></div>
+          <div className="flex justify-center gap-4">
+            {uniqueSeats.map((seat, idx) => {
+              return (
+                <div key={idx} className="flex gap-1">
+                  <div
+                    className={`h-6 w-6 border rounded-t-md ${getColorClass(
+                      seat.color
+                    )} `}
+                  ></div>
                   <span className="text-sm font-medium ">{`${seat.name}(${currency}${seat.price})`}</span>
                 </div>
-              })
-             }
-             <div className="flex gap-1">
-                  <div className={`h-6 w-6 border rounded-t-md bg-gray-400 border-gray-600 `}></div>
-                  <span className="text-sm font-medium ">{`booked seats`}</span>
-                </div>
-                <div className="flex gap-1">
-                  <div className={`h-6 w-6 border rounded-t-md bg-green-500 border-green-600 `}></div>
-                  <span className="text-sm font-medium ">Selected seats</span>
-                </div>
-           </div>
+              );
+            })}
+            <div className="flex gap-1">
+              <div
+                className={`h-6 w-6 border rounded-t-md bg-gray-400 border-gray-600 `}
+              ></div>
+              <span className="text-sm font-medium ">{`booked seats`}</span>
+            </div>
+            <div className="flex gap-1">
+              <div
+                className={`h-6 w-6 border rounded-t-md bg-green-500 border-green-600 `}
+              ></div>
+              <span className="text-sm font-medium ">Selected seats</span>
+            </div>
+          </div>
           {/* summary  */}
 
           <div>
-            {selectedSeats.length > 0 ?(<div>
-              <span>Selected Seats:</span>
-              <span>{selectedSeats?.map((seats)=>seats.id).join(", ")}</span>
-            </div>) : (<span>no seat selected</span>)}
+            {selectedSeats.length > 0 ? (
+              <div>
+                <span className="font-semibold">Selected Seats:</span>
+                <span>
+                  {selectedSeats?.map((seats) => seats.id).join(", ")}
+                </span>
+              </div>
+            ) : (
+              <span className="font-semibold">No Seat Selected</span>
+            )}
+          </div>
+
+          <div>
+            {bookedSeat.length > 0 ? (
+              <div>
+                <span className="font-semibold">Booked Seats:</span>
+                <span>{bookedSeat?.map((seats) => seats).join(", ")}</span>
+              </div>
+            ) : (
+              <span className="font-semibold">No Seat Booked</span>
+            )}
           </div>
 
           {/* book button */}
-          <div></div>
+          <div>
+            <button
+              onClick={() => handleBookSeats()}
+              className="bg-green-400 px-12 py-1 text-black rounded-md"
+            >
+              Book Seat(s)
+            </button>
+          </div>
         </div>
       </div>
     </div>
