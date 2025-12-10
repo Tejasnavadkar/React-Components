@@ -1,4 +1,5 @@
 
+import { useState } from 'react'
 import './App.css'
 
 function App() {
@@ -65,22 +66,17 @@ function App() {
   }
 ]
 
-// checkbox component
-const CheckBoxes = () => {
+  // here we create a central state where we store checkbox is check or not using there ids {10:true/flase}
+  const [checked,setChecked] =  useState({})
 
   return (
     <>
-      
-    </>
-  )
-}
-  
-
-  return (
-    <>
-     <div>
+     <div style={{display:"flex",flexDirection:"column",alignItems:"center"}}>
         <div>
           Nested Checkboxes demo
+        </div>
+        <div className='CheckBoxContainer'>
+         <CheckBoxes data={checkboxesData} checked = {checked} setChecked = {setChecked} />
         </div>
      </div>
     </>
@@ -88,6 +84,35 @@ const CheckBoxes = () => {
 }
 
 export default App
+
+// checkbox component here we perform recursion
+const CheckBoxes = ({data}) => {
+
+  return (
+    <>
+     {
+       data.map((item)=>{
+              return (
+                 <div key={item.id}>
+                  <div>
+                    <input type="checkbox" name="" id=""  />
+                    <span>{item?.name}</span>
+                 </div>
+                 <div style={{marginLeft:"20px"}}>
+                   {
+                    item?.children?.length > 0 && <CheckBoxes data={item.children}  /> 
+                   }
+                 </div>
+                 </div>
+                )
+            })
+     }
+     
+    </>
+  )
+}
+
+
 
 
 
