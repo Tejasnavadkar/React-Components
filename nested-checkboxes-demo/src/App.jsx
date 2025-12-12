@@ -92,6 +92,7 @@ const CheckBoxes = ({data,checked,setChecked}) => {
     setChecked((prev)=>{
       const newChecked = {...prev,[node.id] : isChecked}
 
+      // this fn check children if there parent checked
       const updateChildNode = (node) =>{
         // if parent checked then all child to be checked
         node?.children?.forEach((childNode)=>{
@@ -100,9 +101,10 @@ const CheckBoxes = ({data,checked,setChecked}) => {
           childNode?.children?.length > 0 && updateChildNode(childNode)
         })
       }
-       updateChildNode(node)
+      updateChildNode(node)
 
       //  fn to check agar top level node ke sare children checked hai to parent ko bhi checked karo
+      // this function actually verify ki iss node ke sare children checked hai kya if hai to parent ko bhi check mark karo 
        const verifyCheck = (node) => {
         if(!node.children) return newChecked[node.id] || false // agar node ke children nahi hai to yahi se bollean value return karo
           // .every() return true if all elements met true to the condition 
