@@ -6,7 +6,7 @@ import App2 from './Components/App2.jsx'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <App />
-    {/* <App2/>  */}  {/* akshay saini's yt */}
+    {/* <App /> */}
+    <App2/>   {/* akshay saini's yt */}
   </StrictMode>,
 )
