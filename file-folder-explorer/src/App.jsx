@@ -44,7 +44,7 @@ function App() {
   // by myself from scratch
 
   const [sideBarData,setSideBarData] = useState(sideBarJson)
-  const [clickedId,setClickedId] = useState({})
+  const [clickedId,setClickedId] = useState({}) // expand or not if true then expand its child or not
   const [selectType,setSelectType] = useState()
   const [name,setName] = useState("")
   const [SearchOpenId,setSearchOpenId] = useState(-1)
@@ -57,6 +57,8 @@ function App() {
       newIds[id] = !newIds[id] || false
       return newIds
     })
+
+    // onClick={()=>{setClickedId((prev)=>({...prev,[item?.id]: !prev[item?.id]}))}} this is also work also get item for this
   }
 
   // file/folder creation handler
@@ -115,6 +117,47 @@ function App() {
       }
   }
 
+  // handleDelete function
+
+  const handleDelete = (id) => {
+
+    const deleteNode = (list) =>{
+     // first we traverse the top level elements to filter them map to all and check each elements child using recursion
+      return list.filter((item)=>item.id !== id).map((item)=>{
+        if(item?.children?.length > 0){
+          return {
+            ...item,
+            children:deleteNode(item.children)
+          }
+        }
+        return item
+      })
+    }
+       
+    // 2nd approach using reduce + recursion
+    // const deleteNode = (list) => {
+    //    return list.reduce((acc,item)=>{
+    //        if(item.id === id) {
+    //         return acc
+    //       }
+
+    //        if(item?.children?.length > 0){
+    //         const newItem = {
+    //            ...item,
+    //            children:deleteNode(item.children)
+    //         }
+    //         acc.push(newItem)
+    //         return acc
+    //        }
+
+    //        acc.push(item)
+    //        return acc
+    //     },[])
+    // }
+
+    setSideBarData((prev)=>deleteNode(prev))
+  }
+
   return (
    <>
     <div className=' flex h-screen '>
@@ -138,7 +181,7 @@ function App() {
          </div>
 
          {/* folders/files  */}
-        <Item  data={sideBarData} clickedId={clickedId} setClickedId={setClickedId} handleOpen={handleOpen} SearchOpenId={SearchOpenId} setSearchOpenId={setSearchOpenId} setName={setName} name={name} setSelectType={setSelectType} handleKeyDown={handleKeyDown} selectType={selectType}  />
+        <Item  data={sideBarData} clickedId={clickedId} setClickedId={setClickedId} handleOpen={handleOpen} SearchOpenId={SearchOpenId} setSearchOpenId={setSearchOpenId} setName={setName} name={name} setSelectType={setSelectType} handleKeyDown={handleKeyDown} selectType={selectType} handleDelete={handleDelete}  />
       </aside>
 
       {/* file-screen */}
@@ -154,7 +197,7 @@ export default App
 
 
 //  item render component
-const Item = ({data,clickedId,setClickedId,handleOpen,SearchOpenId,setSearchOpenId,setName,name,setSelectType,handleKeyDown,selectType}) => {
+const Item = ({data,clickedId,setClickedId,handleOpen,SearchOpenId,setSearchOpenId,setName,name,setSelectType,handleKeyDown,selectType,handleDelete}) => {
 
   return(
     <> 
@@ -168,7 +211,8 @@ const Item = ({data,clickedId,setClickedId,handleOpen,SearchOpenId,setSearchOpen
                           {elem.type == "folder" && <span>{clickedId[elem.id] ? <IoIosArrowDown /> : <IoIosArrowForward /> }</span>}
                         {SearchOpenId == elem.id ? <input className='w-full border outline-none bg-white text-black px-0.5 rounded-md' type="text" name="" id="" onBlur={()=>setSearchOpenId(-1)} onClick={(e)=>e.stopPropagation()} value={name} onChange={(e)=>setName(e.target.value)} onKeyDown={(e)=>handleKeyDown(e,name,selectType,elem.id)} /> : <span>{ elem.type == "file" ? `${elem.name}.txt` : elem.name}</span>}
                         </div>
-                       {elem.type == "folder" &&<div className='flex gap-2'>
+                       <div className='flex gap-1'>
+                        {elem.type == "folder" &&<div className='flex gap-2'>
                                                     {/* create Folder  */}
                                                    <button onClick={(e)=>{
                                                       e.stopPropagation()
@@ -186,9 +230,13 @@ const Item = ({data,clickedId,setClickedId,handleOpen,SearchOpenId,setSearchOpen
                                                     setSelectType("file")
                                                    }} className='cursor-pointer'><FaFile /></button>
                                                  </div>}
+                       <div>
+                          <button onClick={()=>handleDelete(elem.id)} className=''>❌</button>
+                       </div>
+                       </div>
                       </div>
                      {clickedId[elem?.id] && <div className={`ml-2 mt-2 overflow-hidden border-none outline-none`}>
-                        {elem?.children?.length > 0 && <Item data={elem.children} clickedId={clickedId} setClickedId={setClickedId} handleOpen={handleOpen} SearchOpenId={SearchOpenId} setSearchOpenId={setSearchOpenId} setName={setName} name={name} setSelectType={setSelectType} handleKeyDown={handleKeyDown} selectType={selectType}  />}
+                        {elem?.children?.length > 0 && <Item data={elem.children} clickedId={clickedId} setClickedId={setClickedId} handleOpen={handleOpen} SearchOpenId={SearchOpenId} setSearchOpenId={setSearchOpenId} setName={setName} name={name} setSelectType={setSelectType} handleKeyDown={handleKeyDown} selectType={selectType} handleDelete={handleDelete}  />}
                       </div>}
             </div>
 
@@ -199,3 +247,16 @@ const Item = ({data,clickedId,setClickedId,handleOpen,SearchOpenId,setSearchOpen
     </>
   )
 }
+
+
+// deletion using reduce method 
+
+// const arr = [1,2,3,4,5]
+
+// const result = arr.reduce((acc,item)=>{
+//     if(item === 2) return acc  // this step actually skip the iteration so it skip 2 so it wont add 2 in acc
+//     acc.push(item)
+//     return acc
+// },[])
+
+// console.log("result--",result)
